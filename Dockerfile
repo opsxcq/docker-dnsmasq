@@ -1,6 +1,6 @@
 FROM alpine:3.5
 
-MAINTAINER opsxcq <opsxcq@thestorm.com.br>
+LABEL maintainer "opsxcq@strm.sh"
 
 RUN apk --no-cache add dnsmasq
 
