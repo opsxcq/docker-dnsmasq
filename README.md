@@ -22,6 +22,57 @@ services:
             - NET_ADMIN
 ```
 
+# Deploy with ansible demo playbook
+
+Is possible to deploy with ansible using [this
+role](https://github.com/opsxcq/ansible-role-linux-server) to create a complete
+Debian buster setup with docker and everything else that you may need.
+
+```yaml
+- hosts: all
+  vars:
+    hostname: "my_dns_server"
+    domain: "strm.sh"
+    network:
+      ip: "192.168.0.9"
+      gateway: "192.168.0.1"
+      dns: "8.8.8.8"
+    github_user: opsxcq
+  tasks:
+  - name: "Network | Create DNS container"
+    copy:
+      dest: /config/dnsmasq.conf
+      content: |
+        #log all dns queries
+        log-queries
+        #dont use hosts nameservers
+        no-resolv
+        #use google as default nameservers
+        server=8.8.4.4
+        server=8.8.8.8
+        #explicitly define host-ip mappings
+        address=/server/10.1.1.2
+        address=/server/10.1.1.2
+
+  - name: "Network | Create DNS container"
+    docker_container:
+      name: dns
+      image: strm/dnsmasq
+      restart_policy: unless-stopped
+      ports:
+        - "53:53/tcp"
+        - "53:53/udp"
+      entrypoint:
+        - dnsmasq
+        - "-d"
+      volumes:
+        - /config/dnsmasq.conf:/etc/dnsmasq.conf
+      capabilities:
+      - NET_ADMIN
+  roles:
+    - opsxcq.linux_server
+```
+
 # Configuration Example
 
 To be able to run the above example, you will need a configuration file. This is a very basic example that has two hosts, but it serve our purpose.
@@ -38,5 +89,6 @@ server=8.8.8.8
 address=/router/10.1.1.1
 address=/server/10.1.1.2
 ```
+
 
 
