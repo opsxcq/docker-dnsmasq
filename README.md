@@ -8,18 +8,18 @@ Dnsmasq is a lightweight, easy to configure, DNS forwarder and DHCP server. It i
 
 Here is a `docker-compose.yml` file that run a local dns server using this image. You can adapt it for your own needs as you wish.
 
-```
+```yaml
 version: '2'
 services:
-    dns:
-        restart: always
-        image: strm/dnsmasq
-        volumes:
-            - ./dnsmasq.conf:/etc/dnsmasq.conf
-        ports:
-            - "53:53/udp"
-        cap_add:
-            - NET_ADMIN
+  dns:
+    restart: always
+    image: strm/dnsmasq
+    volumes:
+      - ./dnsmasq.conf:/etc/dnsmasq.conf
+    ports:
+      - "53:53/udp"
+    cap_add:
+      - NET_ADMIN
 ```
 
 # Deploy with ansible demo playbook
